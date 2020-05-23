@@ -106,7 +106,6 @@ namespace MC基岩版物品配方转方块配方工具
                     SourceItemsJson.Add(JObject.Parse(File.ReadAllText(files[i])));
                 }catch(Exception e){
                     Console.WriteLine("错误：" + e.ToString());
-                    Console.WriteLine("序数：" + i);
                     Console.WriteLine("路径：" + files[i]);
                 }
             }
