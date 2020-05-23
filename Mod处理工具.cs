@@ -100,7 +100,6 @@ namespace MC基岩版物品配方转方块配方工具
         public void ReadFile(){
             //加载所有物品文件
             string[] files = Directory.GetFiles(SBItemPath,"*.json",SearchOption.AllDirectories);
-            System.Console.WriteLine(files.Length);
             SourceItemsJson = new List<JObject>(files.Length);
             for (int i = 0; i < files.Length;i++){
                 try{
