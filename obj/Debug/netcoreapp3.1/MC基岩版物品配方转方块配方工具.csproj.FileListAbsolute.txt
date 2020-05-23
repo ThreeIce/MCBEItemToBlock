@@ -1,0 +1,13 @@
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.exe
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.deps.json
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.runtimeconfig.json
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.runtimeconfig.dev.json
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.dll
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.pdb
+H:\Project\C#\MC基岩版物品配方转方块配方工具\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+H:\Project\C#\MC基岩版物品配方转方块配方工具\obj\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.csprojAssemblyReference.cache
+H:\Project\C#\MC基岩版物品配方转方块配方工具\obj\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.AssemblyInfoInputs.cache
+H:\Project\C#\MC基岩版物品配方转方块配方工具\obj\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.AssemblyInfo.cs
+H:\Project\C#\MC基岩版物品配方转方块配方工具\obj\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.csproj.CopyComplete
+H:\Project\C#\MC基岩版物品配方转方块配方工具\obj\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.dll
+H:\Project\C#\MC基岩版物品配方转方块配方工具\obj\Debug\netcoreapp3.1\MC基岩版物品配方转方块配方工具.pdb
