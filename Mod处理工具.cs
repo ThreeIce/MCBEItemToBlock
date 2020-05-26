@@ -70,7 +70,7 @@ namespace MC基岩版物品配方转方块配方工具
         /// <summary>
         /// 源mod行为包物品的Json集合
         /// </summary>
-        protected List<JObject> SourceItemsJson;
+        protected Dictionary<ObjectName,JObject> SourceItemsJson;
 
         protected List<JObject> SourceRecipesJson;
 
@@ -100,10 +100,13 @@ namespace MC基岩版物品配方转方块配方工具
         public void ReadFile(){
             //加载所有物品文件
             string[] files = Directory.GetFiles(SBItemPath,"*.json",SearchOption.AllDirectories);
-            SourceItemsJson = new List<JObject>(files.Length);
+            SourceItemsJson = new Dictionary<ObjectName, JObject>();
             for (int i = 0; i < files.Length;i++){
                 try{
-                    SourceItemsJson.Add(JObject.Parse(File.ReadAllText(files[i])));
+                    var json = JObject.Parse(File.ReadAllText(files[i]));
+                    var Name = GetItemName(json);
+                    System.Console.WriteLine(Name.FullName);
+                    SourceItemsJson.Add(Name,json);
                 }catch(Exception e){
                     Console.WriteLine("错误：" + e.ToString());
                     Console.WriteLine("路径：" + files[i]);
@@ -115,7 +118,11 @@ namespace MC基岩版物品配方转方块配方工具
             SourceRecipesJson = new List<JObject>();
             for (int i = 0; i < files.Length;i++){
                 try{
-                    SourceRecipesJson.Add(JObject.Parse(File.ReadAllText(files[i])));
+                    var recipe = JObject.Parse(File.ReadAllText(files[i]));
+                    if(IsCrafting(recipe)){
+                        SourceRecipesJson.Add(recipe);
+                        System.Console.WriteLine(recipe["minecraft:recipe_shaped"]["description"]["identifier"].ToString());
+                    }
                 }catch(Exception e){
                     Console.WriteLine("错误：" + e.ToString());
                     Console.WriteLine("序数：" + i);
@@ -125,6 +132,46 @@ namespace MC基岩版物品配方转方块配方工具
             Console.WriteLine("共找到{0}个配方文件",SourceRecipesJson.Count);
 
         }
+        /// <summary>
+        /// 从物品json文件中获得物品的名称信息（带命名空间名）
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public ObjectName GetItemName(JObject obj){
+            return new ObjectName(){FullName = obj["minecraft:item"]["description"]["identifier"].ToString()};
+        }
+        /// <summary>
+        /// 是否是需要手工合成的配方
+        /// </summary>
+        public bool IsCrafting(JObject Recipe){
+            if(Recipe.ContainsKey("minecraft:recipe_shaped")){
+                if(Recipe["minecraft:recipe_shaped"]["tags"].ToObject<string[]>()[0] == "crafting_table"){//待修改匹配规则
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 获取合成配方的产物（多产物只返回有价值的第一个）
+        /// </summary>
+        public ObjectName GetRecipeResult(JObject Recipe){
+            return default(ObjectName);
+        }
+    }
+    public struct ObjectName{
+        public string FullName{get => _fullName;set{
+            _fullName = value;
+            string[] names = value.Split(":");
+            if(names.Length != 2){
+                System.Console.WriteLine("名称长度不符合预期！"+ names.Length);
+                throw new Exception("名称长度不符合预期");
+            }
+            NamespaceName = names[0];
+            Name = names[1];
+        }}
 
+        private string _fullName;
+        public string NamespaceName{get;private set;}
+        public string Name{get;private set;}
     }
 }
