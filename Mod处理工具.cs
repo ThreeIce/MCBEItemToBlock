@@ -119,9 +119,17 @@ namespace MC基岩版物品配方转方块配方工具
             for (int i = 0; i < files.Length;i++){
                 try{
                     var recipe = JObject.Parse(File.ReadAllText(files[i]));
+                    //检查该配方是否是使用工作台的
                     if(IsCrafting(recipe)){
-                        SourceRecipesJson.Add(recipe);
-                        System.Console.WriteLine(recipe["minecraft:recipe_shaped"]["description"]["identifier"].ToString());
+                        
+                        //获得配方的生成物
+                        var result = GetRecipeResult(recipe);
+                        //检查配方的生成物是否为mod物品之一
+                        if(SourceItemsJson.ContainsKey(result.ItemName)){
+                            
+                            System.Console.WriteLine(recipe["minecraft:recipe_shaped"]["description"]["identifier"].ToString());
+                            SourceRecipesJson.Add(recipe);
+                        }
                     }
                 }catch(Exception e){
                     Console.WriteLine("错误：" + e.ToString());
@@ -138,7 +146,7 @@ namespace MC基岩版物品配方转方块配方工具
         /// <param name="obj"></param>
         /// <returns></returns>
         public ObjectName GetItemName(JObject obj){
-            return new ObjectName(){FullName = obj["minecraft:item"]["description"]["identifier"].ToString()};
+            return new ObjectName(obj["minecraft:item"]["description"]["identifier"].ToString());
         }
         /// <summary>
         /// 是否是需要手工合成的配方
@@ -154,10 +162,20 @@ namespace MC基岩版物品配方转方块配方工具
         /// <summary>
         /// 获取合成配方的产物（多产物只返回有价值的第一个）
         /// </summary>
-        public ObjectName GetRecipeResult(JObject Recipe){
-            return default(ObjectName);
+        public RecipeResult GetRecipeResult(JObject Recipe){
+            var resultjson = Recipe["minecraft:recipe_shaped"]["result"];
+            if(resultjson is JArray){
+                System.Console.WriteLine(Recipe["minecraft:recipe_shaped"]["description"]["identifier"].ToString() + "具有多个产物");
+                var resultArray = resultjson as JArray;
+                return new RecipeResult(resultArray[0] as JObject);
+            }else{
+                return new RecipeResult(resultjson as JObject);
+            }
         }
     }
+    /// <summary>
+    /// 代表一个mc对象的名称
+    /// </summary>
     public struct ObjectName{
         public string FullName{get => _fullName;set{
             _fullName = value;
@@ -171,7 +189,52 @@ namespace MC基岩版物品配方转方块配方工具
         }}
 
         private string _fullName;
+        /// <summary>
+        /// mc对象的命名空间名
+        /// </summary>
         public string NamespaceName{get;private set;}
+        /// <summary>
+        /// mc对象的名称
+        /// </summary>
         public string Name{get;private set;}
+        
+        public ObjectName(string fullName){
+            _fullName = null;
+            NamespaceName = null;
+            Name = null;
+            this.FullName = fullName;
+        }
+    }
+    /// <summary>
+    /// 合成配方生成物的表示类
+    /// </summary>
+    public class RecipeResult{
+        /// <summary>
+        /// 代表合成结果的json
+        /// </summary>
+        public JObject JsonResult{get=>_jsonResult;set{
+            _jsonResult = value;
+            ItemName = new ObjectName(value["item"].ToString());
+            if(value.ContainsKey("count")){
+                ItemCount = value["count"].ToObject<int>();
+                System.Console.WriteLine(ItemName.FullName + "具有多个产生数量:" + ItemCount);
+            }else{ItemCount = 1;}
+            if(value.ContainsKey("data")){
+                ItemData = value["data"].ToObject<int>();
+                System.Console.WriteLine(ItemName.FullName + "具有数据值为" + ItemData);
+            }
+        }}
+        
+        public JObject _jsonResult;
+        public ObjectName ItemName{get;private set;}
+        public int ItemCount{get;private set;}
+        /// <summary>
+        /// 可能存在的物品数据值
+        /// </summary>
+        /// <value></value>
+        public int? ItemData{get;private set;}
+        public RecipeResult(JObject jsonResult) { 
+            JsonResult = jsonResult;
+        }
     }
 }
